@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Birthday Slideshow for Reyn 🎉</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin:0;
+      font-family:"Poppins", sans-serif;
+      background: url("b6376e8cfcad5709157679c670ce922e.jpg") repeat center center fixed;
+      background-size: 400px;
+      display:flex;
+      flex-direction: column;
+      align-items:center;
+      justify-content:center;
+      height:100vh;
+      overflow-x:hidden;
+      position: relative;
+    }
+
+    /* floating emojis */
+    .floating-emoji {
+      position: absolute;
+      bottom: -50px;
+      font-size: 28px;
+      opacity: 0.8;
+      animation: floatUp 8s linear infinite, sparkle 1.5s ease-in-out infinite;
+      user-select: none;
+      pointer-events: none;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+      80% { opacity: 0.7; }
+      100% { transform: translateY(-110vh) scale(1.5) rotate(360deg); opacity: 0; }
+    }
+    @keyframes sparkle {
+      0%, 100% { text-shadow: 0 0 5px #fff, 0 0 10px #ff80d5; }
+      50% { text-shadow: 0 0 15px #fff, 0 0 25px #ff66cc, 0 0 35px #c299ff; }
+    }
+
+    /* floating pochaccos */
+    .floating-pochacco {
+      position: absolute;
+      bottom: -120px;
+      width: 80px;
+      opacity: 0.9;
+      animation: floatPochacco 12s linear forwards;
+      pointer-events: none;
+      user-select: none;
+    }
+    @keyframes floatPochacco {
+      0%   { transform: translateY(0) scale(0.8) rotate(0deg); opacity: 1; }
+      50%  { transform: translateY(-50vh) scale(1) rotate(15deg); opacity: 0.9; }
+      100% { transform: translateY(-110vh) scale(1.2) rotate(-15deg); opacity: 0; }
+    }
+
+    /* separate walking pochaccos */
+    .walking-pochacco {
+      position: absolute;
+      bottom: 10px;
+      width: 100px;
+      z-index: 2;
+    }
+
+    /* left-to-right */
+    .pochacco-left {
+      animation: walkLeftToRight 20s linear infinite;
+    }
+    @keyframes walkLeftToRight {
+      0% { left: -120px; transform: scaleX(1); }
+      50% { left: 110vw; transform: scaleX(1); }
+      50.01% { transform: scaleX(-1); }
+      100% { left: -120px; transform: scaleX(-1); }
+    }
+
+    /* right-to-left */
+    .pochacco-right {
+      animation: walkRightToLeft 22s linear infinite;
+      animation-delay: 10s;
+    }
+    @keyframes walkRightToLeft {
+      0% { right: -120px; transform: scaleX(-1); }
+      50% { right: 110vw; transform: scaleX(-1); }
+      50.01% { transform: scaleX(1); }
+      100% { right: -120px; transform: scaleX(1); }
+    }
+
+    .slideshow {
+      position: relative;
+      width: 90%; 
+      max-width: 800px; 
+      height: 500px;
+      border-radius: 20px; 
+      overflow: hidden;
+      margin-bottom: 15px; 
+      background: rgba(255,255,255,0.8);
+      box-shadow: 0 0 25px rgba(27, 5, 228, 0.6),
+                  0 0 50px rgba(188, 170, 255, 0),
+                  0 0 75px rgba(255, 200, 170, 0.3);
+      animation: glowPulse 4s ease-in-out infinite;
+      z-index: 2;
+    }
+    @keyframes glowPulse {
+      0% { box-shadow: 0 0 15px rgba(255, 170, 220, 0.5),
+                   0 0 35px rgba(170, 200, 255, 0.3); }
+      50% { box-shadow: 0 0 30px rgba(53, 40, 235, 0.7),
+                     0 0 60px rgb(120, 181, 255),
+                     0 0 90px rgba(255, 220, 150, 0.4); }
+      100% { box-shadow: 0 0 15px rgba(255, 170, 220, 0.5),
+                     0 0 35px rgba(170, 200, 255, 0.3); }
+    }
+
+    .slides { display: none; width: 100%; height: 100%; }
+    .slides img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .slides img.contain { object-fit: contain; background: transparent; }
+    .fade { animation: fade 1.5s ease-in-out; }
+    @keyframes fade { from {opacity: 0.4;} to {opacity: 1;} }
+
+    /* cute arrows */
+    .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      padding: 14px 18px;
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a970e9f6, #c299ff);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      user-select: none;
+      z-index: 3;
+    }
+    .next { right: 10px; }
+    .prev { left: 10px; }
+    .prev:hover, .next:hover {
+      transform: scale(1.2) rotate(8deg);
+      background: linear-gradient(135deg, #8280ff, #a366ff);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+
+    /* cute emoji dots */
+    .dots { text-align:center; margin-top: 12px; z-index: 3; }
+    .dot {
+      cursor: pointer;
+      height: 32px; width: 32px;
+      margin: 0 6px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      background: radial-gradient(circle, #6d9aee 30%, #d1c6ff 90%);
+      box-shadow: 0 0 8px rgba(255, 150, 220, 0.8);
+      transition: all 0.4s ease;
+    }
+    .dot:hover {
+      transform: scale(1.2);
+      background: radial-gradient(circle, #99b1ff 30%, #b399ff 90%);
+      box-shadow: 0 0 12px rgba(200, 120, 255, 1);
+    }
+    .active {
+      background: radial-gradient(circle, #8266ff 30%, #9966ff 90%);
+      box-shadow: 0 0 15px rgba(255, 100, 200, 1);
+      transform: scale(1.3);
+    }
+
+    .caption {
+      display: none;
+      margin-top: 12px;
+      text-align:center;
+      font-size:24px;
+      font-weight:600;
+      color:#fff;
+      position: relative;
+      text-shadow:0 0 10px #80acff,
+                   0 0 20px #6682ff,
+                   0 0 30px #b366ff;
+      animation: captionGlow 3s ease-in-out infinite alternate;
+      z-index: 3;
+    }
+    @keyframes captionGlow {
+      0% { text-shadow: 0 0 8px #99d6ff, 0 0 16px #66a3ff, 0 0 25px #b366ff; }
+      50% { text-shadow: 0 0 12px #b3daff, 0 0 25px #80acff, 0 0 35px #c299ff; }
+      100% { text-shadow: 0 0 8px #99d6ff, 0 0 16px #66baff, 0 0 25px #b366ff; }
+    }
+
+    /* back button with sparkle + bounce */
+    .back-btn {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #64c1ff, #a87eff);
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      text-decoration: none;
+      z-index: 3;
+      animation: sparkleGlow 2.5s ease-in-out infinite, bounce 3s ease-in-out infinite;
+    }
+    @keyframes sparkleGlow {
+      0%, 100% { box-shadow: 0 0 10px #fff, 0 0 20px #ff9eff, 0 0 30px #9ea0ff; }
+      50% { box-shadow: 0 0 25px #ffd0ff, 0 0 35px #b59aff, 0 0 45px #c6aaff; }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-6px) scale(1.05); }
+    }
+  </style>
+</head>
+<body>
+  <div id="emoji-container"></div>
+  <div id="pochacco-container"></div>
+
+  <div class="slideshow">
+    <div class="slides fade"><img src="9787760e-4522-486e-9315-ef6ce6af65af.jpg"></div>
+    <div class="slides fade"><img src="9a24e641-5e00-44ec-a2e5-677f673f2723.jpg" class="contain"></div>
+    <div class="slides fade"><img src="dc8522be-0e34-4d1d-aa74-289e9f4e16ef.jpg" class="contain"></div>
+    <div class="slides fade"><img src="999e806f-b93b-4512-b336-3ec77f59b7b2.jpg" class="contain"></div>
+
+    <a class="prev" onclick="plusSlides(-1)">❮</a>
+    <a class="next" onclick="plusSlides(1)">❯</a>
+  </div>
+
+  <div class="caption">Happy Birthday Yin ✨</div>
+  <div class="caption">You look Pretty & Cutieee!😙💖</div>
+  <div class="caption">From Seiji🫶💜</div>
+  <div class="caption">RAWRR~~ 🌸</div>
+
+  <div class="dots">
+    <span class="dot" onclick="currentSlide(1)">✨</span>
+    <span class="dot" onclick="currentSlide(2)">💖</span>
+    <span class="dot" onclick="currentSlide(3)">⭐</span>
+    <span class="dot" onclick="currentSlide(4)">🌸</span>
+  </div>
+
+  <a href="inndex.html" class="back-btn">⬅ Back to Celebration</a>
+
+  <!-- Two independent walking pochaccos -->
+  <img src="podance.gif" class="walking-pochacco pochacco-left">
+  <img src="dfcdda690ed9945db50d164158622be1.gif" class="walking-pochacco pochacco-right">
+
+  <script>
+    let slideIndex = 0;
+    let slideTimer;
+    showSlides();
+
+    function showSlides() {
+      const slides = document.getElementsByClassName("slides");
+      const captions = document.getElementsByClassName("caption");
+      const dots = document.getElementsByClassName("dot");
+
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+        captions[i].style.display = "none";
+        dots[i].classList.remove("active");
+      }
+
+      slideIndex++;
+      if (slideIndex > slides.length) { slideIndex = 1; }
+
+      slides[slideIndex-1].style.display = "block";
+      captions[slideIndex-1].style.display = "block";
+      dots[slideIndex-1].classList.add("active");
+
+      slideTimer = setTimeout(showSlides, 3000);
+    }
+
+    function plusSlides(n) {
+      clearTimeout(slideTimer);
+      slideIndex += n - 1;
+      if (slideIndex < 0) slideIndex = 0;
+      showSlides();
+    }
+
+    function currentSlide(n) {
+      clearTimeout(slideTimer);
+      slideIndex = n - 1;
+      showSlides();
+    }
+
+    const emojis = ["💖","✨","🌸","⭐","🎉","🎂"];
+    function createEmoji() {
+      const emoji = document.createElement("div");
+      emoji.classList.add("floating-emoji");
+      emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = Math.random() * 100 + "vw";
+      emoji.style.fontSize = (20 + Math.random() * 30) + "px";
+      emoji.style.animationDuration = (5 + Math.random() * 5) + "s";
+      document.getElementById("emoji-container").appendChild(emoji);
+      setTimeout(() => emoji.remove(), 10000);
+    }
+    setInterval(createEmoji, 800);
+
+    function createPochacco() {
+      const pochacco = document.createElement("img");
+      pochacco.src = "2cfe2ae5cdefe332b8d1421bdda3e9ba.gif";
+      pochacco.classList.add("floating-pochacco");
+      pochacco.style.left = Math.random() * 90 + "vw";
+      pochacco.style.width = (60 + Math.random() * 60) + "px";
+      pochacco.style.animationDuration = (8 + Math.random() * 6) + "s";
+      document.getElementById("pochacco-container").appendChild(pochacco);
+      setTimeout(() => pochacco.remove(), 13000);
+    }
+    setInterval(createPochacco, 4000);
+  </script>
+</body>
+</html>
